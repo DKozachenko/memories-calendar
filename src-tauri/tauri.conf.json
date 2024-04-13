@@ -6,8 +6,8 @@
     "distDir": "../dist/memories-calendar/browser"
   },
   "package": {
-    "productName": "memories-calendar",
-    "version": "0.0.0"
+    "productName": "Memories Calendar",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -40,8 +40,11 @@
     },
     "bundle": {
       "active": true,
+      "publisher": "Diana Kozachenko",
+      "shortDescription": "Calendar for memories",
+      "longDescription": "Calendar for showing memories on specific dates. Shows gallery with files",
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.tauri.memories-calendar",
       "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
       "category": "Utility"
     }
