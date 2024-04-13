@@ -1,0 +1,17 @@
+name: Tauri Checks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ['develop']
+  push:
+    branches: ['develop']
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+      - name: Run linter
+        run: npm run lint:tauri

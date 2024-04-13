@@ -1,7 +1,7 @@
 {
   "build": {
-    "beforeDevCommand": "pnpm start",
-    "beforeBuildCommand": "pnpm build",
+    "beforeDevCommand": "pnpm start:web",
+    "beforeBuildCommand": "pnpm build:web",
     "devPath": "http://localhost:1420",
     "distDir": "../dist/memories-calendar/browser"
   },
@@ -12,16 +12,27 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
+      "fs": {
         "all": false,
-        "open": true
+        "copyFile": false,
+        "createDir": false,
+        "exists": false,
+        "readDir": false,
+        "readFile": false,
+        "removeDir": false,
+        "removeFile": false,
+        "renameFile": false,
+        "scope": [],
+        "writeFile": false
       }
     },
     "windows": [
       {
-        "title": "memories-calendar",
-        "width": 800,
-        "height": 600
+        "title": "Memories Calendar",
+        "minWidth": 1200,
+        "minHeight": 800,
+        "resizable": false,
+        "center": true
       }
     ],
     "security": {
@@ -37,7 +48,8 @@
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "category": "Utility"
     }
   }
 }

@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "start:web": "ng serve",
+    "build:web": "ng build",
+    "lint:web": "oxlint -c ./.eslintrc.json ./src",
+    "start:tauri": "tauri dev",
+    "build:tauri": "tauri build",
+    "lint:tauri": "cd ./src-tauri && cargo clippy"
   },
   "private": true,
   "dependencies": {
@@ -18,23 +21,36 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@taiga-ui/cdk": "^3.74.0",
+    "@taiga-ui/core": "^3.74.0",
+    "@taiga-ui/icons": "^3.74.0",
+    "@taiga-ui/kit": "^3.74.0",
+    "@taiga-ui/layout": "^3.74.0",
+    "@taiga-ui/styles": "^3.74.0",
+    "@tauri-apps/api": "^1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.2",
-    "@tauri-apps/api": "^1"
+    "zone.js": "~0.14.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0",
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.0",
+    "@tauri-apps/cli": "^1.5.11",
     "@types/jasmine": "~5.1.0",
+    "cz-conventional-changelog": "^3.3.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.2.2",
-    "@tauri-apps/cli": "^1"
+    "oxlint": "^0.2.17",
+    "typescript": "~5.2.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

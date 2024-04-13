@@ -1,24 +1,27 @@
-import { Component } from '@angular/core';
+import { TuiRootModule, TuiDialogModule, TuiAlertModule } from '@taiga-ui/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { invoke } from "@tauri-apps/api/tauri";
+import { CommandService } from './services';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, TuiRootModule, TuiDialogModule, TuiAlertModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  greetingMessage = "";
+  private readonly commandService: CommandService = inject(CommandService);
+
+  greetingMessage = '';
 
   greet(event: SubmitEvent, name: string): void {
     event.preventDefault();
 
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    invoke<string>("greet", { name }).then((text) => {
-      this.greetingMessage = text;
-    });
+    this.commandService
+      .execute<string, { name: string }>('greet', { name })
+      .subscribe((value: string) => (this.greetingMessage = value));
   }
 }
