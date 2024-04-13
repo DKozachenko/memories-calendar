@@ -20,6 +20,7 @@ module.exports = {
       value: 'chore',
       name: 'chore:    Changes to the build process, project configuration\n            or tools (linter, formatter)',
     },
+    { value: 'ci/cd', name: 'ci/cd:    Deployment changes' },
     { value: 'revert', name: 'revert:   Revert to a commit' },
     { value: 'WIP', name: 'WIP:      Work in progress' },
   ],

@@ -14,4 +14,4 @@ jobs:
       - name: Get repository code
         uses: actions/checkout@v4
       - name: Run linter
-        run: npm run lint:web
+        run: npx oxlint@latest -c ./.eslintrc.json ./src

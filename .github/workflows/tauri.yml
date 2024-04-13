@@ -13,5 +13,10 @@ jobs:
     steps:
       - name: Get repository code
         uses: actions/checkout@v4
+      - name: Install webkit2gtk (ubuntu only)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webkit2gtk-4.0
       - name: Run linter
-        run: npm run lint:native
+        working-directory: ./src-tauri
+        run: cargo clippy
