@@ -1,4 +1,4 @@
-name: Tauri Checks
+name: Native Checks
 
 on:
   workflow_dispatch:
@@ -14,4 +14,4 @@ jobs:
       - name: Get repository code
         uses: actions/checkout@v4
       - name: Run linter
-        run: npm run lint:tauri
+        run: npm run lint:native

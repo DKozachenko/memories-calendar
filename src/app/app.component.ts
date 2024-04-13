@@ -15,7 +15,7 @@ import { CommandService } from './services';
 export class AppComponent {
   private readonly commandService: CommandService = inject(CommandService);
 
-  greetingMessage = '';
+  greetingMessage = 'dfsdfs';
 
   greet(event: SubmitEvent, name: string): void {
     event.preventDefault();

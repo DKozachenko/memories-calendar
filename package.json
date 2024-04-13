@@ -7,9 +7,9 @@
     "start:web": "ng serve",
     "build:web": "ng build",
     "lint:web": "oxlint -c ./.eslintrc.json ./src",
-    "start:tauri": "tauri dev",
-    "build:tauri": "tauri build",
-    "lint:tauri": "cd ./src-tauri && cargo clippy"
+    "start:native": "tauri dev",
+    "build:native": "tauri build",
+    "lint:native": "cd ./src-tauri && cargo clippy"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +39,7 @@
     "@tauri-apps/cli": "^1.5.11",
     "@types/jasmine": "~5.1.0",
     "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "^7.0.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -50,7 +51,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "./node_modules/cz-customizable"
     },
     "cz-customizable": {
       "config": "commitizen.config.js"
