@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, OnInit, inject } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -13,38 +13,54 @@ import ruLocale from '@fullcalendar/core/locales/ru';
   styleUrl: './memories-calendar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MemoriesCalendarComponent {
+export class MemoriesCalendarComponent implements OnInit {
   private readonly localeId: string = inject(LOCALE_ID);
 
-  calendarOptions: CalendarOptions = {
-    plugins: [dayGridPlugin, interactionPlugin],
-    headerToolbar: {
-      left: 'prev today',
-      center: 'title',
-      right: 'next',
-    },
-    height: 'calc(100vh - 1rem - 1rem)',
-    expandRows: true,
-    initialView: 'dayGridMonth',
-    weekends: true,
-    displayEventTime: false,
-    locale: this.localeId,
-    locales: [ruLocale],
-    firstDay: 1,
-    events: [
-      {
-        id: '1',
-        title: '5 фото',
-        date: new Date(new Date().setDate(1)),
-        color: 'red',
+  calendarOptions!: CalendarOptions;
+
+  public ngOnInit(): void {
+    this.calendarOptions = this.getCalendarOptions();
+  }
+
+  private getCalendarOptions(): CalendarOptions {
+    const staticOptions: CalendarOptions = {
+      plugins: [dayGridPlugin, interactionPlugin],
+      headerToolbar: {
+        left: 'prev today',
+        center: 'title',
+        right: 'next',
       },
-      {
-        id: '2',
-        title: '2 видео',
-        date: new Date(new Date().setDate(1)),
-        color: 'green',
-      },
-    ],
-    dateClick: (day: DateClickArg) => console.log('test', day),
-  };
+      height: 'calc(100vh - 1rem - 1rem)',
+      expandRows: true,
+      initialView: 'dayGridMonth',
+      weekends: true,
+      displayEventTime: false,
+      locale: this.localeId,
+      locales: [ruLocale],
+      firstDay: 1,
+      dateClick: this.openDayMemoriesModal,
+    };
+
+    return {
+      ...staticOptions,
+      events: [
+        {
+          id: '1',
+          title: '5 фото',
+          date: new Date(new Date().setDate(1)),
+          color: 'red',
+        },
+        {
+          id: '2',
+          title: '2 видео',
+          date: new Date(new Date().setDate(1)),
+          color: 'green',
+        },
+      ],
+    };
+  }
+
+  private openDayMemoriesModal(day: DateClickArg): void {
+    console.log('day', day);
+  }
 }
