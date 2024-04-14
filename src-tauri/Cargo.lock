@@ -1524,6 +1524,7 @@ dependencies = [
 name = "memories-calendar"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "log",
  "serde",
  "serde_json",

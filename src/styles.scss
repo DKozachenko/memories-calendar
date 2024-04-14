@@ -1,0 +1,37 @@
+// Styles overwriting for some buttons using Taiga UI css variables
+.fc-toolbar-title:first-letter {
+  text-transform: uppercase;
+}
+
+.fc-button {
+  &.fc-prev-button,
+  &.fc-next-button,
+  &.fc-today-button {
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    background-color: var(--tui-primary);
+    color: var(--tui-primary-text);
+    transition-property: color, background-color, opacity;
+    transition-duration: var(--tui-duration, 300ms);
+    transition-timing-function: ease-in-out;
+
+    &:hover {
+      background-color: var(--tui-primary-hover);
+    }
+  }
+
+  &.fc-today-button {
+    &:disabled {
+      background-color: var(--tui-primary);
+      opacity: var(--tui-disabled-opacity);
+      pointer-events: none;
+    }
+  }
+}
+
+// Used for same height of rows
+// https://github.com/fullcalendar/fullcalendar/issues/5762
+tr[role='row'] {
+  height: calc(100% / 6);
+}

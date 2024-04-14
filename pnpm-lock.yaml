@@ -29,6 +29,18 @@ dependencies:
   '@angular/router':
     specifier: ^17.0.0
     version: 17.3.4(@angular/common@17.3.4)(@angular/core@17.3.4)(@angular/platform-browser@17.3.4)(rxjs@7.8.1)
+  '@fullcalendar/angular':
+    specifier: ^6.1.10
+    version: 6.1.10(@angular/common@17.3.4)(@angular/core@17.3.4)(@fullcalendar/core@6.1.11)
+  '@fullcalendar/core':
+    specifier: ^6.1.11
+    version: 6.1.11
+  '@fullcalendar/daygrid':
+    specifier: ^6.1.11
+    version: 6.1.11(@fullcalendar/core@6.1.11)
+  '@fullcalendar/interaction':
+    specifier: ^6.1.11
+    version: 6.1.11(@fullcalendar/core@6.1.11)
   '@taiga-ui/cdk':
     specifier: ^3.74.0
     version: 3.74.0(@angular-devkit/core@17.3.3)(@angular-devkit/schematics@17.3.3)(@angular/animations@17.3.4)(@angular/common@17.3.4)(@angular/core@17.3.4)(@angular/forms@17.3.4)(@angular/platform-browser@17.3.4)(rxjs@7.8.1)
@@ -2226,6 +2238,41 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@fullcalendar/angular@6.1.10(@angular/common@17.3.4)(@angular/core@17.3.4)(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-y0aIC5Zexu8PaULF4u+K8LzMVu8pI7kLkEI53c7gV2/1OOGMg5Ld3tVeuArsHfAdlPdOqiWa/q2/ECZj28/Izg==}
+    peerDependencies:
+      '@angular/common': 12 - 17
+      '@angular/core': 12 - 17
+      '@fullcalendar/core': ~6.1.10
+    dependencies:
+      '@angular/common': 17.3.4(@angular/core@17.3.4)(rxjs@7.8.1)
+      '@angular/core': 17.3.4(rxjs@7.8.1)(zone.js@0.14.4)
+      '@fullcalendar/core': 6.1.11
+      tslib: 2.6.2
+    dev: false
+
+  /@fullcalendar/core@6.1.11:
+    resolution: {integrity: sha512-TjG7c8sUz+Vkui2FyCNJ+xqyu0nq653Ibe99A66LoW95oBo6tVhhKIaG1Wh0GVKymYiqAQN/OEdYTuj4ay27kA==}
+    dependencies:
+      preact: 10.12.1
+    dev: false
+
+  /@fullcalendar/daygrid@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-hF5jJB7cgUIxWD5MVjj8IU407HISyLu7BWXcEIuTytkfr8oolOXeCazqnnjmRbnFOncoJQVstTtq6SIhaT32Xg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+    dev: false
+
+  /@fullcalendar/interaction@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-ynOKjzuPwEAMgTQ6R/Z2zvzIIqG4p8/Qmnhi1q0vzPZZxSIYx3rlZuvpEK2WGBZZ1XEafDOP/LGfbWoNZe+qdg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -6836,6 +6883,10 @@ packages:
       picocolors: 1.0.0
       source-map-js: 1.2.0
     dev: true
+
+  /preact@10.12.1:
+    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
+    dev: false
 
   /proc-log@3.0.0:
     resolution: {integrity: sha512-++Vn7NS4Xf9NacaU9Xq3URUuqZETPsf8L4j5/ckhaRYsfPeRyzGw+iDjFhV/Jr3uNmTvvddEJFWh5R1gRgUH8A==}
