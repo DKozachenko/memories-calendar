@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { CommandService } from './services';
-import { MemoriesCalendarComponent } from './components/memories-calendar.component';
+import { MemoriesCalendarComponent } from './components';
 
 @Component({
   selector: 'app-root',

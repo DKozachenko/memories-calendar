@@ -1,4 +1,4 @@
-// Styles overwriting for some buttons using Taiga UI css variables
+// Перезапись нескольких стилей для некоторых кнопок @fullcalenda, чтобы стилизация была больше похожа на Taiga UI
 .fc-toolbar-title:first-letter {
   text-transform: uppercase;
 }
@@ -30,7 +30,7 @@
   }
 }
 
-// Used for same height of rows
+// Используется для того, чтобы высота строк была одинаковая
 // https://github.com/fullcalendar/fullcalendar/issues/5762
 tr[role='row'] {
   height: calc(100% / 6);

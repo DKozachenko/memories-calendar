@@ -1,0 +1,18 @@
+<tui-input [formControl]="directoryControl">
+  Директория
+  <input
+    tuiTextfield
+    type="text"
+  />
+</tui-input>
+
+<button
+  tuiButton
+  size="m"
+  class="submit-button"
+  type="button"
+  [disabled]="directoryControl.invalid"
+  (click)="submit()"
+>
+  Submit
+</button>
