@@ -4,8 +4,16 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ['develop']
+    paths:
+      - .github/**
+      - .eslintrc.json
+      - ./src/**
   push:
     branches: ['develop']
+    paths:
+      - .github/**
+      - .eslintrc.json
+      - ./src/**
 
 jobs:
   lint:

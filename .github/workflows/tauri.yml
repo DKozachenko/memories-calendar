@@ -4,8 +4,17 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ['develop']
+    paths:
+      - .github/**
+      - .cargo/**
+      - ./src-tauri/**
   push:
     branches: ['develop']
+    paths:
+      - .github/**
+      - .cargo/**
+      - ./src-tauri/**
+
 
 jobs:
   lint:
