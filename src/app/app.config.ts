@@ -7,7 +7,7 @@ import localeRuExtra from '@angular/common/locales/extra/ru';
 import { TuiRootModule } from '@taiga-ui/core';
 
 import { routes } from './app.routes';
-import { CommandService } from './services';
+import { CommandService, EventBuildService } from './services';
 
 const locale: string = 'ru-RU';
 registerLocaleData(localeRu, locale, localeRuExtra);
@@ -17,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideRouter(routes),
     CommandService,
+    EventBuildService,
     importProvidersFrom(TuiRootModule),
     {
       provide: LOCALE_ID,

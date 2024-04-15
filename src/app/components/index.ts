@@ -1,2 +1,2 @@
 export { MemoriesCalendarComponent } from './memories-calendar/memories-calendar.component';
-export { RequestDirectoryModalComponent } from './request-directory-modal/request-directory-modal.component';
+export { GetEventsDataModalComponent } from './get-events-data-modal/get-events-data-modal.component';

@@ -1,8 +1,7 @@
 import { TuiRootModule, TuiDialogModule, TuiAlertModule } from '@taiga-ui/core';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { CommandService } from './services';
 import { MemoriesCalendarComponent } from './components';
 
 @Component({
@@ -13,16 +12,4 @@ import { MemoriesCalendarComponent } from './components';
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
-  private readonly commandService: CommandService = inject(CommandService);
-
-  greetingMessage = 'dfsdfs';
-
-  greet(event: SubmitEvent, name: string): void {
-    event.preventDefault();
-
-    this.commandService
-      .execute<string, { name: string }>('greet', { name })
-      .subscribe((value: string) => (this.greetingMessage = value));
-  }
-}
+export class AppComponent {}

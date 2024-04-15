@@ -291,8 +291,10 @@ checksum = "8a0d04d43504c61aa6c7531f1871dd0d418d91130162063b789da00fd7057a5e"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-targets 0.52.4",
 ]
 
@@ -1525,12 +1527,14 @@ name = "memories-calendar"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "log",
  "serde",
  "serde_json",
  "simple_logger",
  "tauri",
  "tauri-build",
+ "walkdir",
 ]
 
 [[package]]

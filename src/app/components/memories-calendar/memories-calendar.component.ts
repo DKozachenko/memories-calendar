@@ -8,20 +8,22 @@ import {
   inject,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import ruLocale from '@fullcalendar/core/locales/ru';
-import { TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
+import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Observable, takeUntil } from 'rxjs';
-import { RequestDirectoryModalComponent } from '../request-directory-modal/request-directory-modal.component';
+import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
+import { IGetEventsData } from '../../models/interfaces';
+import { EventBuildService } from '../../services';
 
 @Component({
   selector: 'app-memories-calendar',
   standalone: true,
-  imports: [FullCalendarModule, TuiDialogModule, RequestDirectoryModalComponent],
+  imports: [FullCalendarModule, TuiDialogModule, GetEventsDataModalComponent],
   providers: [TuiDestroyService],
   templateUrl: './memories-calendar.component.html',
   styleUrl: './memories-calendar.component.scss',
@@ -30,12 +32,14 @@ import { RequestDirectoryModalComponent } from '../request-directory-modal/reque
 export class MemoriesCalendarComponent implements OnInit {
   private readonly localeId: string = inject(LOCALE_ID);
   private readonly dialogService: TuiDialogService = inject(TuiDialogService);
+  private readonly alertService: TuiAlertService = inject(TuiAlertService);
   private readonly injector: Injector = inject(Injector);
   private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
+  private readonly eventBuilderService: EventBuildService = inject(EventBuildService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
-  private requestDirectoryModal: Observable<string> = this.dialogService.open<string>(
-    new PolymorpheusComponent(RequestDirectoryModalComponent, this.injector),
+  private getEventsDataModal: Observable<IGetEventsData> = this.dialogService.open<IGetEventsData>(
+    new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
     {
       closeable: false,
       dismissible: false,
@@ -46,16 +50,18 @@ export class MemoriesCalendarComponent implements OnInit {
   public calendarOptions!: CalendarOptions;
 
   public ngOnInit(): void {
-    this.requestDirectoryModal.pipe(takeUntil(this.destroyService)).subscribe({
-      next: (directory: string) => {
-        console.warn('directory', directory);
-        this.calendarOptions = this.getCalendarOptions();
+    this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
+      next: (data: IGetEventsData) => {
+        console.warn('data', data);
+        this.calendarOptions = this.getCalendarOptions(data);
         this.cdr.markForCheck();
       },
+      error: (err: Error) =>
+        this.alertService.open(err, { label: 'Ошибка', status: 'error', autoClose: true }).subscribe(),
     });
   }
 
-  private getCalendarOptions(): CalendarOptions {
+  private getCalendarOptions(getEventsData: IGetEventsData): CalendarOptions {
     const staticOptions: CalendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -77,21 +83,32 @@ export class MemoriesCalendarComponent implements OnInit {
 
     return {
       ...staticOptions,
-      events: [
-        {
-          id: '1',
-          title: '5 фото',
-          date: new Date(new Date().setDate(1)),
-          color: 'red',
-        },
-        {
-          id: '2',
-          title: '2 видео',
-          date: new Date(new Date().setDate(1)),
-          color: 'green',
-        },
-      ],
+      events: this.buildEvents(getEventsData),
     };
+  }
+
+  private buildEvents(data: IGetEventsData): EventInput[] {
+    const result: EventInput[] = [];
+
+    for (const [date, quantitativeData] of Object.entries(data)) {
+      if (quantitativeData.videos_number > 0) {
+        const videosEvent: EventInput = this.eventBuilderService.createVideosEvent(
+          date,
+          quantitativeData.videos_number,
+        );
+        result.push(videosEvent);
+      }
+
+      if (quantitativeData.photos_number > 0) {
+        const photosEvent: EventInput = this.eventBuilderService.createPhotosEvent(
+          date,
+          quantitativeData.photos_number,
+        );
+        result.push(photosEvent);
+      }
+    }
+
+    return result;
   }
 
   private openDayMemoriesModal(day: DateClickArg): void {
