@@ -1,3 +1,3 @@
 export const enum Command {
-  GET_EVENTS = 'get_events',
+  GET_EVENTS = 'get_events_command',
 }

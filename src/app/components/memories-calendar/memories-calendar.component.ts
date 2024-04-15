@@ -17,8 +17,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Observable, takeUntil } from 'rxjs';
 import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
-import { IGetEventsData } from '../../models/interfaces';
-import { EventBuildService } from '../../services';
+import { IEventsMap } from '../../models/interfaces';
+import { EventBuildService, StoreService } from '../../services';
 
 @Component({
   selector: 'app-memories-calendar',
@@ -36,9 +36,10 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly injector: Injector = inject(Injector);
   private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
   private readonly eventBuilderService: EventBuildService = inject(EventBuildService);
+  private readonly storeService: StoreService = inject(StoreService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
-  private getEventsDataModal: Observable<IGetEventsData> = this.dialogService.open<IGetEventsData>(
+  private getEventsDataModal: Observable<IEventsMap> = this.dialogService.open<IEventsMap>(
     new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
     {
       closeable: false,
@@ -51,8 +52,9 @@ export class MemoriesCalendarComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
-      next: (data: IGetEventsData) => {
+      next: (data: IEventsMap) => {
         console.warn('data', data);
+        this.storeService.updateEventsMap(data);
         this.calendarOptions = this.getCalendarOptions(data);
         this.cdr.markForCheck();
       },
@@ -61,7 +63,7 @@ export class MemoriesCalendarComponent implements OnInit {
     });
   }
 
-  private getCalendarOptions(getEventsData: IGetEventsData): CalendarOptions {
+  private getCalendarOptions(getEventsData: IEventsMap): CalendarOptions {
     const staticOptions: CalendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -78,7 +80,7 @@ export class MemoriesCalendarComponent implements OnInit {
       locale: this.localeId,
       locales: [ruLocale],
       firstDay: 1,
-      dateClick: this.openDayMemoriesModal,
+      dateClick: this.openDayMemoriesModal.bind(this),
     };
 
     return {
@@ -87,7 +89,7 @@ export class MemoriesCalendarComponent implements OnInit {
     };
   }
 
-  private buildEvents(data: IGetEventsData): EventInput[] {
+  private buildEvents(data: IEventsMap): EventInput[] {
     const result: EventInput[] = [];
 
     for (const [date, quantitativeData] of Object.entries(data)) {
@@ -112,6 +114,17 @@ export class MemoriesCalendarComponent implements OnInit {
   }
 
   private openDayMemoriesModal(day: DateClickArg): void {
+    const eventsMap: IEventsMap | null = this.storeService.getEventsMap();
+    if (!eventsMap) {
+      return;
+    }
+
+    if (!eventsMap[day.dateStr]) {
+      this.alertService
+        .open('На эту дату файлы не найдены', { label: 'Предупреждение', status: 'warning', autoClose: true })
+        .subscribe();
+    }
+
     console.log('day', day);
   }
 }
