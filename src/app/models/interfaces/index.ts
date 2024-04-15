@@ -1,2 +1,2 @@
-export { IEventQuantitativeData } from './event-quantitative-data.interface';
+export { IDateQuantitativeData } from './date-quantitative-data.interface';
 export { IGetEventsData } from './get-events-data.interface';

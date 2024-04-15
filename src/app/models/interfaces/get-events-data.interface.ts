@@ -1,5 +1,5 @@
-import { IEventQuantitativeData } from './event-quantitative-data.interface';
+import { IDateQuantitativeData } from './date-quantitative-data.interface';
 
 export interface IGetEventsData {
-  [key: string]: IEventQuantitativeData;
+  [key: string]: IDateQuantitativeData;
 }

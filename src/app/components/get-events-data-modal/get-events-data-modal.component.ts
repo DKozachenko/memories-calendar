@@ -27,6 +27,7 @@ export class GetEventsDataModalComponent {
 
   readonly directoryControl = new FormControl(null, [Validators.required]);
 
+  // TODO: мб валидатор для пути и можно еще хранить директории, которые зафейлились
   public submit(): void {
     const path: string = this.directoryControl.value!;
     this.commandService
