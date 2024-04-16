@@ -15,10 +15,11 @@ import ruLocale from '@fullcalendar/core/locales/ru';
 import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable, retry, takeUntil } from 'rxjs';
 import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
 import { IEventsMap } from '../../models/interfaces';
-import { EventBuildService, StoreService } from '../../services';
+import { CommandService, EventBuildService, StoreService } from '../../services';
+import { Command } from '../../models/enums';
 
 @Component({
   selector: 'app-memories-calendar',
@@ -36,6 +37,7 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly injector: Injector = inject(Injector);
   private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
   private readonly eventBuilderService: EventBuildService = inject(EventBuildService);
+  private readonly commandService: CommandService = inject(CommandService);
   private readonly storeService: StoreService = inject(StoreService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
@@ -53,7 +55,6 @@ export class MemoriesCalendarComponent implements OnInit {
   public ngOnInit(): void {
     this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
       next: (data: IEventsMap) => {
-        console.warn('data', data);
         this.storeService.updateEventsMap(data);
         this.calendarOptions = this.getCalendarOptions(data);
         this.cdr.markForCheck();
@@ -123,8 +124,21 @@ export class MemoriesCalendarComponent implements OnInit {
       this.alertService
         .open('На эту дату файлы не найдены', { label: 'Предупреждение', status: 'warning', autoClose: true })
         .subscribe();
+      return;
     }
 
-    console.log('day', day);
+    const path: string = this.storeService.getDirectory();
+    this.commandService
+      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILENAMES, { path, date: day.dateStr })
+      .pipe(takeUntil(this.destroyService))
+      .subscribe({
+        next: (data: string[]) => {
+          console.warn(data);
+        },
+        error: (err: string) => {
+          console.error('Ошибка при получении данных о событии: ', err);
+          this.alertService.open(err, { label: 'Ошибка', status: 'error', autoClose: true }).subscribe();
+        },
+      });
   }
 }
