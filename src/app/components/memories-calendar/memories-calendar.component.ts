@@ -131,7 +131,7 @@ export class MemoriesCalendarComponent implements OnInit {
 
     const path: string = this.storeService.getDirectory();
     this.commandService
-      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILENAMES, { path, date: day.dateStr })
+      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: day.dateStr })
       .pipe(takeUntil(this.destroyService))
       .subscribe({
         next: (data: string[]) => {

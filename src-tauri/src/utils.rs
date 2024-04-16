@@ -1,25 +1,30 @@
+use serde::Serialize;
 use std::{ffi::OsStr, fs, io};
 use walkdir::DirEntry;
 
 const VIDEO_EXTENSIONS: &[&str] = &["mp4", "mov"];
 const PHOTO_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png"];
 
-pub fn is_video(entry: &DirEntry) -> bool {
-    entry
-        .path()
-        .extension()
-        .and_then(OsStr::to_str)
-        .map(|ext| VIDEO_EXTENSIONS.contains(&ext.to_ascii_lowercase().as_str()))
-        .unwrap_or(false)
+#[derive(Serialize)]
+pub enum FileType {
+    Video,
+    Photo,
 }
 
-pub fn is_photo(entry: &DirEntry) -> bool {
+pub fn get_file_type(entry: &DirEntry) -> Option<FileType> {
     entry
         .path()
         .extension()
         .and_then(OsStr::to_str)
-        .map(|ext| PHOTO_EXTENSIONS.contains(&ext.to_ascii_lowercase().as_str()))
-        .unwrap_or(false)
+        .and_then(|ext| {
+            if PHOTO_EXTENSIONS.contains(&ext.to_ascii_lowercase().as_str()) {
+                return Some(FileType::Photo);
+            }
+            if VIDEO_EXTENSIONS.contains(&ext.to_ascii_lowercase().as_str()) {
+                return Some(FileType::Video);
+            }
+            None
+        })
 }
 
 pub fn is_dir(path: &str) -> anyhow::Result<()> {

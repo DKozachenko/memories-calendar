@@ -5,7 +5,7 @@ mod commands;
 mod utils;
 
 use anyhow::Context;
-use commands::{get_event_filenames_command, get_events_command};
+use commands::{get_event_files_data_command, get_events_command};
 
 fn main() -> anyhow::Result<()> {
     simple_logger::init()?;
@@ -18,7 +18,7 @@ fn start_tauri() -> anyhow::Result<()> {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_events_command,
-            get_event_filenames_command
+            get_event_files_data_command
         ])
         .run(tauri::generate_context!())
         .context("run tauri application")

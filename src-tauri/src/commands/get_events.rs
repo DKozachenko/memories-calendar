@@ -9,7 +9,7 @@ use chrono::{NaiveDate, Utc};
 use serde::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use crate::utils::{is_dir, is_photo, is_video};
+use crate::utils::{get_file_type, is_dir, FileType};
 
 #[derive(Serialize, Default)]
 pub struct DateQuantitativeData {
@@ -56,18 +56,16 @@ fn process_entry(
     };
 
     let created_naive_date: NaiveDate = created_utc_datetime.naive_local().date();
-
-    if !is_video(&entry) && !is_photo(&entry) {
+    let Some(entry_file_type) = get_file_type(&entry) else {
         return Ok(());
-    }
+    };
 
     let event_data: &mut DateQuantitativeData = events_map.entry(created_naive_date).or_default();
 
-    if is_video(&entry) {
-        event_data.videos_number += 1;
-    } else if is_photo(&entry) {
-        event_data.photos_number += 1;
-    }
+    match entry_file_type {
+        FileType::Video => event_data.videos_number += 1,
+        FileType::Photo => event_data.photos_number += 1,
+    };
 
     Ok(())
 }
