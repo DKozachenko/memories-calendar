@@ -7,7 +7,7 @@ import { CommandService, StoreService } from '../../services';
 import { Command } from '../../models/enums';
 import { takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { IEventsMap } from '../../models/interfaces';
+import { IDateQuantitativeDataMap } from '../../models/interfaces';
 
 @Component({
   selector: 'app-get-events-data-modal',
@@ -19,7 +19,8 @@ import { IEventsMap } from '../../models/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GetEventsDataModalComponent {
-  private readonly context: TuiDialogContext<IEventsMap> = inject<TuiDialogContext<IEventsMap>>(POLYMORPHEUS_CONTEXT);
+  private readonly context: TuiDialogContext<IDateQuantitativeDataMap> =
+    inject<TuiDialogContext<IDateQuantitativeDataMap>>(POLYMORPHEUS_CONTEXT);
   private readonly commandService: CommandService = inject(CommandService);
   private readonly storeService: StoreService = inject(StoreService);
   private readonly alertService: TuiAlertService = inject(TuiAlertService);
@@ -31,10 +32,10 @@ export class GetEventsDataModalComponent {
   public submit(): void {
     const path: string = this.directoryControl.value!;
     this.commandService
-      .execute<IEventsMap, { path: string }>(Command.GET_EVENTS, { path })
+      .execute<IDateQuantitativeDataMap, { path: string }>(Command.GET_EVENTS, { path })
       .pipe(takeUntil(this.destroyService))
       .subscribe({
-        next: (data: IEventsMap) => {
+        next: (data: IDateQuantitativeDataMap) => {
           this.storeService.updateDirectory(path);
           this.context.completeWith(data);
         },

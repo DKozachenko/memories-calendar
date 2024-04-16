@@ -15,8 +15,8 @@ import ruLocale from '@fullcalendar/core/locales/ru';
 import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { Observable, retry, takeUntil } from 'rxjs';
-import { IEventsMap } from '../../models/interfaces';
+import { Observable, takeUntil } from 'rxjs';
+import { IDateQuantitativeDataMap } from '../../models/interfaces';
 import { CommandService, EventBuildService, StoreService } from '../../services';
 import { Command } from '../../models/enums';
 import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
@@ -42,7 +42,7 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly storeService: StoreService = inject(StoreService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
-  private getEventsDataModal: Observable<IEventsMap> = this.dialogService.open<IEventsMap>(
+  private getEventsDataModal: Observable<IDateQuantitativeDataMap> = this.dialogService.open<IDateQuantitativeDataMap>(
     new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
     {
       closeable: false,
@@ -55,7 +55,7 @@ export class MemoriesCalendarComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
-      next: (data: IEventsMap) => {
+      next: (data: IDateQuantitativeDataMap) => {
         this.storeService.updateEventsMap(data);
         this.calendarOptions = this.getCalendarOptions(data);
         this.cdr.markForCheck();
@@ -65,7 +65,7 @@ export class MemoriesCalendarComponent implements OnInit {
     });
   }
 
-  private getCalendarOptions(getEventsData: IEventsMap): CalendarOptions {
+  private getCalendarOptions(getEventsData: IDateQuantitativeDataMap): CalendarOptions {
     const staticOptions: CalendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -91,23 +91,16 @@ export class MemoriesCalendarComponent implements OnInit {
     };
   }
 
-  private buildEvents(data: IEventsMap): EventInput[] {
+  private buildEvents(data: IDateQuantitativeDataMap): EventInput[] {
     const result: EventInput[] = [];
 
     for (const [date, quantitativeData] of Object.entries(data)) {
-      if (quantitativeData.videos_number > 0) {
-        const videosEvent: EventInput = this.eventBuilderService.createVideosEvent(
-          date,
-          quantitativeData.videos_number,
-        );
+      if (quantitativeData.videosNumber > 0) {
+        const videosEvent: EventInput = this.eventBuilderService.createVideosEvent(date, quantitativeData.videosNumber);
         result.push(videosEvent);
       }
-
-      if (quantitativeData.photos_number > 0) {
-        const photosEvent: EventInput = this.eventBuilderService.createPhotosEvent(
-          date,
-          quantitativeData.photos_number,
-        );
+      if (quantitativeData.photosNumber > 0) {
+        const photosEvent: EventInput = this.eventBuilderService.createPhotosEvent(date, quantitativeData.photosNumber);
         result.push(photosEvent);
       }
     }
@@ -117,7 +110,7 @@ export class MemoriesCalendarComponent implements OnInit {
 
   private openDayMemoriesModal(day: DateClickArg): void {
     // TODO: на клик по ячейке работает, на клик по событию нет
-    const eventsMap: IEventsMap | null = this.storeService.getEventsMap();
+    const eventsMap: IDateQuantitativeDataMap | null = this.storeService.getEventsMap();
     if (!eventsMap) {
       return;
     }

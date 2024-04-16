@@ -1,18 +1,19 @@
+use anyhow::Context;
+use chrono::{NaiveDate, NaiveDateTime, Utc};
+use serde::Serialize;
 use std::{
     ffi::OsStr,
     fs::Metadata,
     time::{SystemTime, UNIX_EPOCH},
 };
-
-use anyhow::Context;
-use chrono::{NaiveDate, NaiveDateTime, Utc};
-use serde::Serialize;
+use ts_rs::TS;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::utils::{get_file_type, is_dir, FileType};
 
-// TODO автогенерация типов??
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export, export_to = "file-data.type.ts", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct FileData {
     date_time: NaiveDateTime,
     name: String,

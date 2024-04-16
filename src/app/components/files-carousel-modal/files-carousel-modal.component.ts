@@ -1,13 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiCalendarModule, TuiDialogContext } from '@taiga-ui/core';
-import { TuiCarouselModule, TuiInputModule, TuiPaginationModule } from '@taiga-ui/kit';
+import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
+import { TuiCarouselModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { CommandService, StoreService } from '../../services';
-import { Command } from '../../models/enums';
-import { takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { IEventsMap } from '../../models/interfaces';
 
 import { convertFileSrc } from '@tauri-apps/api/tauri';
 

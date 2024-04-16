@@ -3,6 +3,7 @@ use std::{
     fs::Metadata,
     time::{SystemTime, UNIX_EPOCH},
 };
+use ts_rs::TS;
 
 use anyhow::Context;
 use chrono::{NaiveDate, Utc};
@@ -10,8 +11,13 @@ use serde::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
 use crate::utils::{get_file_type, is_dir, FileType};
-
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, TS)]
+#[ts(
+    export,
+    export_to = "date-quantitative-data.type.ts",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
 pub struct DateQuantitativeData {
     photos_number: usize,
     videos_number: usize,

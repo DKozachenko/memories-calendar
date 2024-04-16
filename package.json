@@ -9,7 +9,8 @@
     "lint:web": "oxlint -c ./.eslintrc.json ./src",
     "start:native": "tauri dev",
     "build:native": "tauri build",
-    "lint:native": "cd ./src-tauri && cargo clippy"
+    "lint:native": "cd ./src-tauri && cargo clippy",
+    "generate:types": " cd ./src-tauri && cargo test"
   },
   "private": true,
   "dependencies": {

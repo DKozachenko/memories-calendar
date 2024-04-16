@@ -1,11 +1,13 @@
 use serde::Serialize;
 use std::{ffi::OsStr, fs, io};
+use ts_rs::TS;
 use walkdir::DirEntry;
 
 const VIDEO_EXTENSIONS: &[&str] = &["mp4", "mov"];
 const PHOTO_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png"];
 
-#[derive(Serialize)]
+#[derive(Serialize, TS)]
+#[ts(export, export_to = "file-type.type.ts", rename_all = "camelCase")]
 pub enum FileType {
     Video,
     Photo,
