@@ -8,7 +8,7 @@ import {
   inject,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, EventInput } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import ruLocale from '@fullcalendar/core/locales/ru';
@@ -82,7 +82,17 @@ export class MemoriesCalendarComponent implements OnInit {
       locale: this.localeId,
       locales: [ruLocale],
       firstDay: 1,
-      dateClick: this.openDayMemoriesModal.bind(this),
+      eventClick: (event: EventClickArg) => {
+        if (!event.event.start) {
+          return;
+        }
+        const dateStr: string = this.parseDateFromDateObj(event.event.start);
+        this.openDayMemoriesModal(dateStr);
+      },
+      dateClick: (day: DateClickArg) => {
+        const dateStr = day.dateStr;
+        this.openDayMemoriesModal(dateStr);
+      },
     };
 
     return {
@@ -108,14 +118,23 @@ export class MemoriesCalendarComponent implements OnInit {
     return result;
   }
 
-  private openDayMemoriesModal(day: DateClickArg): void {
-    // TODO: на клик по ячейке работает, на клик по событию нет
+  private parseDateFromDateObj(date: Date): string {
+    return (
+      date.getFullYear() +
+      '-' +
+      (date.getMonth() + 1).toString().padStart(2, '0') +
+      '-' +
+      date.getDate().toString().padStart(2, '0')
+    );
+  }
+
+  private openDayMemoriesModal(dateStr: string): void {
     const eventsMap: IDateQuantitativeDataMap | null = this.storeService.getEventsMap();
     if (!eventsMap) {
       return;
     }
 
-    if (!eventsMap[day.dateStr]) {
+    if (!eventsMap[dateStr]) {
       this.alertService
         .open('На эту дату файлы не найдены', { label: 'Предупреждение', status: 'warning', autoClose: true })
         .subscribe();
@@ -124,7 +143,7 @@ export class MemoriesCalendarComponent implements OnInit {
 
     const path: string = this.storeService.getDirectory();
     this.commandService
-      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: day.dateStr })
+      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: dateStr })
       .pipe(takeUntil(this.destroyService))
       .subscribe({
         next: (data: string[]) => {
