@@ -55,6 +55,7 @@ fn process_entry(
         return Ok(());
     }
 
+    // TODO: сортировка
     if created_naive_date != date {
         return Ok(());
     }

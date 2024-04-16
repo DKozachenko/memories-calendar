@@ -16,15 +16,16 @@ import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/co
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { Observable, retry, takeUntil } from 'rxjs';
-import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
 import { IEventsMap } from '../../models/interfaces';
 import { CommandService, EventBuildService, StoreService } from '../../services';
 import { Command } from '../../models/enums';
+import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
+import { FilesCarouselModalComponent } from '../files-carousel-modal/files-carousel-modal.component';
 
 @Component({
   selector: 'app-memories-calendar',
   standalone: true,
-  imports: [FullCalendarModule, TuiDialogModule, GetEventsDataModalComponent],
+  imports: [FullCalendarModule, TuiDialogModule, GetEventsDataModalComponent, FilesCarouselModalComponent],
   providers: [TuiDestroyService],
   templateUrl: './memories-calendar.component.html',
   styleUrl: './memories-calendar.component.scss',
@@ -115,6 +116,7 @@ export class MemoriesCalendarComponent implements OnInit {
   }
 
   private openDayMemoriesModal(day: DateClickArg): void {
+    // TODO: на клик по ячейке работает, на клик по событию нет
     const eventsMap: IEventsMap | null = this.storeService.getEventsMap();
     if (!eventsMap) {
       return;
@@ -134,6 +136,15 @@ export class MemoriesCalendarComponent implements OnInit {
       .subscribe({
         next: (data: string[]) => {
           console.warn(data);
+          this.dialogService
+            .open<void>(new PolymorpheusComponent(FilesCarouselModalComponent, this.injector), {
+              closeable: true,
+              dismissible: false,
+              size: 'l',
+              label: 'Галерея',
+              data,
+            })
+            .subscribe();
         },
         error: (err: string) => {
           console.error('Ошибка при получении данных о событии: ', err);

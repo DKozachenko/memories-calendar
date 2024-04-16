@@ -1,0 +1,23 @@
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  margin: 0 -5rem;
+
+  :host-context(tui-root._mobile) & {
+    margin: 0;
+
+    button {
+      display: none;
+    }
+  }
+}
+
+.image-wrapper {
+  max-height: 70vh;
+
+  img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+}

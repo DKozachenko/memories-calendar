@@ -1,0 +1,38 @@
+<div
+  tuiCarouselButtons
+  class="carousel-wrapper"
+  (touchstart.passive.stop)="(0)"
+>
+  <button
+    icon="tuiIconChevronLeftLarge"
+    tuiIconButton
+    tuiMode="onDark"
+    type="button"
+    class="tui-space_right-4"
+    (click)="navigate(-1)"
+  ></button>
+  <tui-carousel [(index)]="index">
+    @for (photoUrl of photoUrls;track photoUrl) {
+    <div
+      class="image-wrapper"
+      *tuiItem
+    >
+      <img
+        [src]="photoUrl"
+        alt="Фото"
+      />
+      <p>Фото</p>
+    </div>
+    } @empty {
+    <p>Нет файлов</p>
+    }
+  </tui-carousel>
+  <button
+    icon="tuiIconChevronRightLarge"
+    tuiIconButton
+    tuiMode="onDark"
+    type="button"
+    class="tui-space_left-4"
+    (click)="navigate(1)"
+  ></button>
+</div>
