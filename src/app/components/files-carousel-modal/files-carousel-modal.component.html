@@ -9,22 +9,16 @@
     tuiMode="onDark"
     type="button"
     class="tui-space_right-4"
-    (click)="navigate(-1)"
+    [disabled]="isLeftButtonDisabled"
+    (click)="scrollLeft()"
   ></button>
   <tui-carousel [(index)]="index">
-    @for (photoUrl of photoUrls;track photoUrl) {
-    <div
-      class="image-wrapper"
-      *tuiItem
-    >
-      <img
-        [src]="photoUrl"
-        alt="Фото"
-      />
-      <p>Фото</p>
-    </div>
+    @for (fileData of filesData;track trackByLocalUrl) { 
+      <div *tuiItem class="carousel-item">
+        <app-file-card [fileData]="fileData"></app-file-card>
+      </div>
     } @empty {
-    <p>Нет файлов</p>
+      <p class="tui-text_body-m">Нет файлов</p>
     }
   </tui-carousel>
   <button
@@ -33,6 +27,7 @@
     tuiMode="onDark"
     type="button"
     class="tui-space_left-4"
-    (click)="navigate(1)"
+    [disabled]="isRightButtonDisabled"
+    (click)="scrollRight()"
   ></button>
 </div>

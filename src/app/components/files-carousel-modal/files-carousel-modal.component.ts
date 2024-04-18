@@ -1,38 +1,59 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
+import { TuiAlertModule, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
 import { TuiCarouselModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { CommandService, StoreService } from '../../services';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-
-import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { FileData } from '@bindings/file-data.type';
+import { FileCardComponent } from '../file-card/file-card.component';
 
 @Component({
   selector: 'app-files-carousel-modal',
   standalone: true,
-  imports: [TuiButtonModule, TuiPaginationModule, TuiCarouselModule, TuiAlertModule],
+  imports: [TuiButtonModule, TuiPaginationModule, TuiCarouselModule, TuiAlertModule, FileCardComponent],
   providers: [TuiDestroyService],
   templateUrl: './files-carousel-modal.component.html',
   styleUrl: './files-carousel-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilesCarouselModalComponent implements OnInit {
-  private readonly context: TuiDialogContext<void, string[]> =
-    inject<TuiDialogContext<void, string[]>>(POLYMORPHEUS_CONTEXT);
-  private readonly commandService: CommandService = inject(CommandService);
-  private readonly storeService: StoreService = inject(StoreService);
-  private readonly alertService: TuiAlertService = inject(TuiAlertService);
-  private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
+  private readonly context: TuiDialogContext<void, FileData[]> =
+    inject<TuiDialogContext<void, FileData[]>>(POLYMORPHEUS_CONTEXT);
 
-  public photoUrls: string[] = [];
-
-  public ngOnInit(): void {
-    this.photoUrls = this.context.data.map((url: string) => convertFileSrc(url));
-  }
+  public filesData: FileData[] = [];
 
   public index: number = 0;
+  public isLeftButtonDisabled = false;
+  public isRightButtonDisabled = false;
 
-  navigate(delta: number): void {
-    this.index = this.index + delta < 0 ? this.photoUrls.length - 1 : (this.index + delta) % this.photoUrls.length;
+  public ngOnInit(): void {
+    this.filesData = this.context.data;
+    this.resetButtonDisabling();
+  }
+
+  public scrollLeft(): void {
+    if (this.index <= 0) {
+      return;
+    }
+
+    --this.index;
+    this.resetButtonDisabling();
+  }
+
+  public scrollRight(): void {
+    if (this.index >= this.filesData.length - 1) {
+      return;
+    }
+
+    ++this.index;
+    this.resetButtonDisabling();
+  }
+
+  public trackByLocalUrl(item: FileData, index: number): string {
+    return item.localUrl;
+  }
+
+  private resetButtonDisabling(): void {
+    this.isLeftButtonDisabled = this.index <= 0;
+    this.isRightButtonDisabled = this.index >= this.filesData.length - 1;
   }
 }

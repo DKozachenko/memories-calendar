@@ -4,3 +4,5 @@
 /dist
 /node_modules
 /bindings
+/src/app/components/files-carousel-modal/files-carousel-modal.component.html
+/src/app/components/file-card/file-card.component.html

@@ -15,6 +15,7 @@ import ruLocale from '@fullcalendar/core/locales/ru';
 import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { FileData } from '@bindings/file-data.type';
 import { Observable, takeUntil } from 'rxjs';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
 import { CommandService, EventBuildService, StoreService } from '../../services';
@@ -143,16 +144,15 @@ export class MemoriesCalendarComponent implements OnInit {
 
     const path: string = this.storeService.getDirectory();
     this.commandService
-      .execute<string[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: dateStr })
+      .execute<FileData[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: dateStr })
       .pipe(takeUntil(this.destroyService))
       .subscribe({
-        next: (data: string[]) => {
-          console.warn(data);
+        next: (data: FileData[]) => {
           this.dialogService
             .open<void>(new PolymorpheusComponent(FilesCarouselModalComponent, this.injector), {
               closeable: true,
               dismissible: false,
-              size: 'l',
+              size: 'm',
               label: 'Галерея',
               data,
             })

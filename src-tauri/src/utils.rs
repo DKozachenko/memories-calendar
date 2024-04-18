@@ -7,7 +7,7 @@ const VIDEO_EXTENSIONS: &[&str] = &["mp4", "mov"];
 const PHOTO_EXTENSIONS: &[&str] = &["jpg", "jpeg", "png"];
 
 #[derive(Serialize, TS)]
-#[ts(export, export_to = "file-type.type.ts", rename_all = "camelCase")]
+#[ts(export, export_to = "file-type.type.ts")]
 pub enum FileType {
     Video,
     Photo,
