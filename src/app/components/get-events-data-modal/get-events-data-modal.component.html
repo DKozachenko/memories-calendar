@@ -1,11 +1,17 @@
-<tui-input [formControl]="directoryControl">
+<tui-input
+  tuiAutoFocus
+  [formControl]="directoryControl"
+>
   Директория
-  <!-- TODO: Хочу сразу фокус -->
   <input
     tuiTextfield
     type="text"
   />
 </tui-input>
+<tui-error
+  [formControl]="directoryControl"
+  [error]="[] | tuiFieldError | async"
+></tui-error>
 
 <button
   tuiButton

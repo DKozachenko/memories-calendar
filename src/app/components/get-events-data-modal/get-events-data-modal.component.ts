@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
-import { TuiInputModule } from '@taiga-ui/kit';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext, TuiErrorModule } from '@taiga-ui/core';
+import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipeModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiDestroyService, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { takeUntil } from 'rxjs';
 import { CommandService, StoreService } from '../../services';
@@ -13,8 +14,27 @@ import { IDateQuantitativeDataMap } from '../../models/interfaces';
 @Component({
   selector: 'app-get-events-data-modal',
   standalone: true,
-  imports: [TuiInputModule, TuiButtonModule, TuiAlertModule, FormsModule, ReactiveFormsModule],
-  providers: [TuiDestroyService],
+  imports: [
+    TuiInputModule,
+    TuiButtonModule,
+    TuiAlertModule,
+    TuiAutoFocusModule,
+    TuiFieldErrorPipeModule,
+    TuiErrorModule,
+    AsyncPipe,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
+  providers: [
+    TuiDestroyService,
+    {
+      provide: TUI_VALIDATION_ERRORS,
+      useValue: {
+        required: 'Поле является обязательным',
+        directoryAlreadyCurrent: (currentDirectory: string) => `Директория "${currentDirectory}" уже является текущей`,
+      },
+    },
+  ],
   templateUrl: './get-events-data-modal.component.html',
   styleUrl: './get-events-data-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

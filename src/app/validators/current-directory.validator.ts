@@ -11,6 +11,6 @@ export function currentDirectoryValidator(storeService: StoreService): Validator
       return null;
     }
 
-    return { currentDirectory };
+    return { directoryAlreadyCurrent: currentDirectory };
   };
 }
