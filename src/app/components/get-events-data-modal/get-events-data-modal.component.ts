@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { CommandService, StoreService } from '../../services';
-import { Command } from '../../models/enums';
-import { takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { takeUntil } from 'rxjs';
+import { CommandService, StoreService } from '../../services';
+import { currentDirectoryValidator } from '../../validators';
+import { Command } from '../../models/enums';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
 
 @Component({
@@ -26,7 +27,10 @@ export class GetEventsDataModalComponent {
   private readonly alertService: TuiAlertService = inject(TuiAlertService);
   private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
 
-  readonly directoryControl = new FormControl(null, [Validators.required]);
+  readonly directoryControl = new FormControl<string | null>(null, [
+    Validators.required,
+    currentDirectoryValidator(this.storeService),
+  ]);
 
   // TODO: мб валидатор для пути и можно еще хранить директории, которые зафейлились
   public submit(): void {

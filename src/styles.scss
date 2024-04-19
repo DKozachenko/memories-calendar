@@ -6,7 +6,8 @@
 .fc-button {
   &.fc-prev-button,
   &.fc-next-button,
-  &.fc-today-button {
+  &.fc-today-button,
+  &.fc-changeDirectoryButton-button {
     box-shadow: none;
     outline: none;
     border: 0;

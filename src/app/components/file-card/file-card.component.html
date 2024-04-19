@@ -11,11 +11,7 @@
     } 
     @case ('Photo') {
       <div class="image-wrapper">
-        <!-- TODO: NgOptimizedImage -->
-        <img
-          [src]="mediaSrc"
-          [alt]="fileData.name"
-        />
+        <img [src]="mediaSrc" [alt]="fileData.name" />
       </div>
       <div class="file-info">
         <p class="tui-text_body-m">Название: <span>{{ fileData.name }}</span></p>

@@ -55,6 +55,11 @@ export class MemoriesCalendarComponent implements OnInit {
   public calendarOptions!: CalendarOptions;
 
   public ngOnInit(): void {
+    this.openGetEventsDataModal();
+  }
+
+  private openGetEventsDataModal(): void {
+    // TODO: возможно, получение будет слишком долгим и нужен будет лоадер, но нужен тест на проде
     this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
       next: (data: IDateQuantitativeDataMap) => {
         this.storeService.updateEventsMap(data);
@@ -69,10 +74,18 @@ export class MemoriesCalendarComponent implements OnInit {
   private getCalendarOptions(getEventsData: IDateQuantitativeDataMap): CalendarOptions {
     const staticOptions: CalendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
+      customButtons: {
+        changeDirectoryButton: {
+          text: 'Сменить директорию',
+          click: () => {
+            this.openGetEventsDataModal();
+          },
+        },
+      },
       headerToolbar: {
         left: 'prev today',
         center: 'title',
-        right: 'next',
+        right: 'changeDirectoryButton next',
       },
       // 1rem - вертикальный отступ
       height: 'calc(100vh - 1rem - 1rem)',
@@ -142,7 +155,12 @@ export class MemoriesCalendarComponent implements OnInit {
       return;
     }
 
-    const path: string = this.storeService.getDirectory();
+    const path: string | null = this.storeService.getDirectory();
+
+    if (!path) {
+      throw new Error('Нет текущей директории в стейте');
+    }
+
     this.commandService
       .execute<FileData[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: dateStr })
       .pipe(takeUntil(this.destroyService))

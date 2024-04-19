@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { IDateQuantitativeDataMap } from '../models/interfaces';
 
+// TODO: сигналы?
 @Injectable()
 export class StoreService {
-  private directory: string = '';
+  private directory: string | null = null;
   private eventsMap: IDateQuantitativeDataMap | null = null;
 
   private directory$: Subject<string> = new Subject<string>();
@@ -23,7 +24,7 @@ export class StoreService {
     this.eventsMap = value;
   }
 
-  public getDirectory(): string {
+  public getDirectory(): string | null {
     return this.directory;
   }
 
