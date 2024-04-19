@@ -7,10 +7,11 @@ import { TuiDestroyService, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { takeUntil } from 'rxjs';
 import { CommandService, StoreService } from '../../services';
-import { currentDirectoryValidator } from '../../validators';
+import { currentDirectoryValidator, filePathValidator } from '../../validators';
 import { Command } from '../../models/enums';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
 
+// TODO: Мне не оч нрав, что компоненты так разбиты, мб перегруппировать
 @Component({
   selector: 'app-get-events-data-modal',
   standalone: true,
@@ -32,6 +33,7 @@ import { IDateQuantitativeDataMap } from '../../models/interfaces';
       useValue: {
         required: 'Поле является обязательным',
         directoryAlreadyCurrent: (currentDirectory: string) => `Директория "${currentDirectory}" уже является текущей`,
+        incorrectFilePath: (currentPath: string) => `Текущий путь "${currentPath}" не является корректным`,
       },
     },
   ],
@@ -50,9 +52,9 @@ export class GetEventsDataModalComponent {
   readonly directoryControl = new FormControl<string | null>(null, [
     Validators.required,
     currentDirectoryValidator(this.storeService),
+    filePathValidator(),
   ]);
 
-  // TODO: мб валидатор для пути и можно еще хранить директории, которые зафейлились
   public submit(): void {
     const path: string = this.directoryControl.value!;
     this.commandService
