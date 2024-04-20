@@ -35,10 +35,10 @@ dependencies:
   '@fullcalendar/core':
     specifier: ^6.1.11
     version: 6.1.11
-  '@fullcalendar/daygrid':
+  '@fullcalendar/interaction':
     specifier: ^6.1.11
     version: 6.1.11(@fullcalendar/core@6.1.11)
-  '@fullcalendar/interaction':
+  '@fullcalendar/multimonth':
     specifier: ^6.1.11
     version: 6.1.11(@fullcalendar/core@6.1.11)
   '@ng-web-apis/common':
@@ -2284,6 +2284,15 @@ packages:
       '@fullcalendar/core': ~6.1.11
     dependencies:
       '@fullcalendar/core': 6.1.11
+    dev: false
+
+  /@fullcalendar/multimonth@6.1.11(@fullcalendar/core@6.1.11):
+    resolution: {integrity: sha512-7DbPC+AAlaKnquGVdw1Z85Q3nSZ4GZ1NcVIk4k7bLnqDlntwHPPsrDlSIzUWKcN0q5/u7jQHm4PU1m3LAl70Sg==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.11
+    dependencies:
+      '@fullcalendar/core': 6.1.11
+      '@fullcalendar/daygrid': 6.1.11(@fullcalendar/core@6.1.11)
     dev: false
 
   /@isaacs/cliui@8.0.2:

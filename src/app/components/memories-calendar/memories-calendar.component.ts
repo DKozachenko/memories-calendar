@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import multiMonthPlugin from '@fullcalendar/multimonth';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import ruLocale from '@fullcalendar/core/locales/ru';
 import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/core';
@@ -81,7 +81,7 @@ export class MemoriesCalendarComponent implements OnInit {
 
   private getCalendarOptions(getEventsData: IDateQuantitativeDataMap): CalendarOptions {
     const staticOptions: CalendarOptions = {
-      plugins: [dayGridPlugin, interactionPlugin],
+      plugins: [multiMonthPlugin, interactionPlugin],
       customButtons: {
         changeDirectoryButton: {
           text: 'Сменить директорию',
@@ -98,7 +98,8 @@ export class MemoriesCalendarComponent implements OnInit {
       // 1rem - вертикальный отступ
       height: 'calc(100vh - 1rem - 1rem)',
       expandRows: true,
-      initialView: 'dayGridMonth',
+      initialView: 'multiMonthYear',
+      multiMonthMaxColumns: 2,
       weekends: true,
       displayEventTime: false,
       locale: this.localeId,
