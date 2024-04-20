@@ -1,6 +1,6 @@
 <tui-input
   tuiAutoFocus
-  [formControl]="directoryControl"
+  [formControl]="directoryControl()"
 >
   Директория
   <input
@@ -9,7 +9,7 @@
   />
 </tui-input>
 <tui-error
-  [formControl]="directoryControl"
+  [formControl]="directoryControl()"
   [error]="[] | tuiFieldError | async"
 ></tui-error>
 
@@ -18,7 +18,7 @@
   size="m"
   class="submit-button"
   type="button"
-  [disabled]="directoryControl.invalid"
+  [disabled]="directoryControl().invalid"
   (click)="submit()"
 >
   Submit

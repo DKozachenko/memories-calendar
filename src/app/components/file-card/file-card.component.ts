@@ -3,9 +3,13 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  InputSignal,
   OnInit,
   ViewEncapsulation,
+  WritableSignal,
   inject,
+  input,
+  signal,
 } from '@angular/core';
 import { FileData } from '@bindings/file-data.type';
 import { VideoPlayerComponent } from '../video-player/video-player.component';
@@ -20,14 +24,14 @@ import { convertFileSrc } from '@tauri-apps/api/tauri';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileCardComponent implements OnInit {
-  @Input({ required: true }) fileData!: FileData;
+  public fileData: InputSignal<FileData> = input.required<FileData>({});
 
-  public mediaSrc: string = '';
-  public time: string = '';
+  public mediaSrc: WritableSignal<string> = signal<string>('');
+  public time: WritableSignal<string> = signal<string>('');
 
   public ngOnInit(): void {
-    this.mediaSrc = convertFileSrc(this.fileData.localUrl);
-    this.time = this.getTime(this.fileData.dateTime);
+    this.mediaSrc.set(convertFileSrc(this.fileData().localUrl));
+    this.time.set(this.getTime(this.fileData().dateTime));
   }
 
   private getTime(dateStr: string): string {

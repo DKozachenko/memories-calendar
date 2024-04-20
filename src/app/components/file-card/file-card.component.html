@@ -1,21 +1,21 @@
 <div class="file-card">
-  @switch (fileData.kind) {
+  @switch (fileData().kind) {
     @case ('Video') {
       <div class="video-wrapper">
-        <app-video-player [sourceUrl]="mediaSrc"></app-video-player>
+        <app-video-player [sourceUrl]="mediaSrc()"></app-video-player>
       </div>
       <div class="file-info">
-        <p class="tui-text_body-m">Название: <span>{{ fileData.name }}</span></p>
-        <p class="tui-text_body-m">Время создания: <span>{{ time }}</span></p>
+        <p class="tui-text_body-m">Название: <span>{{ fileData().name }}</span></p>
+        <p class="tui-text_body-m">Время создания: <span>{{ time() }}</span></p>
       </div>
     } 
     @case ('Photo') {
       <div class="image-wrapper">
-        <img [src]="mediaSrc" [alt]="fileData.name" />
+        <img [src]="mediaSrc()" [alt]="fileData().name" />
       </div>
       <div class="file-info">
-        <p class="tui-text_body-m">Название: <span>{{ fileData.name }}</span></p>
-        <p class="tui-text_body-m">Время создания: <span>{{ time }}</span></p>
+        <p class="tui-text_body-m">Название: <span>{{ fileData().name }}</span></p>
+        <p class="tui-text_body-m">Время создания: <span>{{ time() }}</span></p>
       </div>
     } 
     @default {

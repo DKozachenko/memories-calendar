@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext, TuiErrorModule } from '@taiga-ui/core';
@@ -11,7 +11,6 @@ import { currentDirectoryValidator, filePathValidator } from '../../validators';
 import { Command } from '../../models/enums';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
 
-// TODO: Мне не оч нрав, что компоненты так разбиты, мб перегруппировать
 @Component({
   selector: 'app-get-events-data-modal',
   standalone: true,
@@ -49,14 +48,16 @@ export class GetEventsDataModalComponent {
   private readonly alertService: TuiAlertService = inject(TuiAlertService);
   private readonly destroyService: TuiDestroyService = inject(TuiDestroyService);
 
-  readonly directoryControl = new FormControl<string | null>(null, [
-    Validators.required,
-    currentDirectoryValidator(this.storeService),
-    filePathValidator(),
-  ]);
+  public readonly directoryControl: WritableSignal<FormControl<string | null>> = signal<FormControl<string | null>>(
+    new FormControl<string | null>(null, [
+      Validators.required,
+      currentDirectoryValidator(this.storeService),
+      filePathValidator(),
+    ]),
+  );
 
   public submit(): void {
-    const path: string = this.directoryControl.value!;
+    const path: string = this.directoryControl().value!;
     this.commandService
       .execute<IDateQuantitativeDataMap, { path: string }>(Command.GET_EVENTS, { path })
       .pipe(takeUntil(this.destroyService))

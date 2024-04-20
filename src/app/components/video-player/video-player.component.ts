@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, InputSignal, WritableSignal, input, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TuiAlertModule, TuiButtonModule } from '@taiga-ui/core';
+import { TuiButtonModule } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { SECONDS_IN_MINUTE, TuiDestroyService, TuiMediaModule } from '@taiga-ui/cdk';
 
@@ -14,13 +14,13 @@ import { SECONDS_IN_MINUTE, TuiDestroyService, TuiMediaModule } from '@taiga-ui/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideoPlayerComponent {
-  @Input({ required: true }) sourceUrl: string = '';
+  public sourceUrl: InputSignal<string> = input.required<string>();
 
-  public currentTime: number = 0;
-  public paused: boolean = true;
+  public currentTime: WritableSignal<number> = signal<number>(0);
+  public paused: WritableSignal<boolean> = signal<boolean>(true);
 
   public get icon(): string {
-    return this.paused ? 'tuiIconPlayLarge' : 'tuiIconPauseLarge';
+    return this.paused() ? 'tuiIconPlayLarge' : 'tuiIconPauseLarge';
   }
 
   public getTime(time: number): string {
@@ -36,6 +36,6 @@ export class VideoPlayerComponent {
   }
 
   public toggleState(): void {
-    this.paused = !this.paused;
+    this.paused.update((value: boolean) => !value);
   }
 }

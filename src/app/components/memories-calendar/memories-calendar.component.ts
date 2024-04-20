@@ -5,7 +5,9 @@ import {
   Injector,
   LOCALE_ID,
   OnInit,
+  WritableSignal,
   inject,
+  signal,
 } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core';
@@ -43,16 +45,20 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly storeService: StoreService = inject(StoreService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
-  private getEventsDataModal: Observable<IDateQuantitativeDataMap> = this.dialogService.open<IDateQuantitativeDataMap>(
-    new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
-    {
-      closeable: false,
-      dismissible: false,
-      label: 'Выберите папку с файлами',
-    },
+  private getEventsDataModal: WritableSignal<Observable<IDateQuantitativeDataMap>> = signal<
+    Observable<IDateQuantitativeDataMap>
+  >(
+    this.dialogService.open<IDateQuantitativeDataMap>(
+      new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
+      {
+        closeable: false,
+        dismissible: false,
+        label: 'Выберите папку с файлами',
+      },
+    ),
   );
 
-  public calendarOptions!: CalendarOptions;
+  public calendarOptions: WritableSignal<CalendarOptions | undefined> = signal<CalendarOptions | undefined>(undefined);
 
   public ngOnInit(): void {
     this.openGetEventsDataModal();
@@ -60,15 +66,17 @@ export class MemoriesCalendarComponent implements OnInit {
 
   private openGetEventsDataModal(): void {
     // TODO: возможно, получение будет слишком долгим и нужен будет лоадер, но нужен тест на проде
-    this.getEventsDataModal.pipe(takeUntil(this.destroyService)).subscribe({
-      next: (data: IDateQuantitativeDataMap) => {
-        this.storeService.updateEventsMap(data);
-        this.calendarOptions = this.getCalendarOptions(data);
-        this.cdr.markForCheck();
-      },
-      error: (err: Error) =>
-        this.alertService.open(err, { label: 'Ошибка', status: 'error', autoClose: true }).subscribe(),
-    });
+    this.getEventsDataModal()
+      .pipe(takeUntil(this.destroyService))
+      .subscribe({
+        next: (data: IDateQuantitativeDataMap) => {
+          this.storeService.updateEventsMap(data);
+          this.calendarOptions.set(this.getCalendarOptions(data));
+          this.cdr.markForCheck();
+        },
+        error: (err: Error) =>
+          this.alertService.open(err, { label: 'Ошибка', status: 'error', autoClose: true }).subscribe(),
+      });
   }
 
   private getCalendarOptions(getEventsData: IDateQuantitativeDataMap): CalendarOptions {

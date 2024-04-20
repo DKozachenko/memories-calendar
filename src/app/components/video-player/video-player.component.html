@@ -9,7 +9,7 @@
     (click)="toggleState()"
   >
     <source
-      [src]="sourceUrl"
+      [src]="sourceUrl()"
       type="video/mp4"
     />
   </video>
@@ -36,8 +36,8 @@
       [(ngModel)]="currentTime"
     />
     <div class="time">
-      <time [attr.datetime]="getTime(currentTime)">
-        {{ getTime(currentTime) }}
+      <time [attr.datetime]="getTime(currentTime())">
+        {{ getTime(currentTime()) }}
       </time>
       /
       <time [attr.datetime]="getTime(video.duration)">

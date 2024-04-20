@@ -9,11 +9,11 @@
     tuiMode="onDark"
     type="button"
     class="tui-space_right-4"
-    [disabled]="isLeftButtonDisabled"
+    [disabled]="isLeftButtonDisabled()"
     (click)="scrollLeft()"
   ></button>
   <tui-carousel [(index)]="index">
-    @for (fileData of filesData;track trackByLocalUrl) { 
+    @for (fileData of filesData();track trackByLocalUrl) { 
       <div *tuiItem class="carousel-item">
         <app-file-card [fileData]="fileData"></app-file-card>
       </div>
@@ -27,7 +27,7 @@
     tuiMode="onDark"
     type="button"
     class="tui-space_left-4"
-    [disabled]="isRightButtonDisabled"
+    [disabled]="isRightButtonDisabled()"
     (click)="scrollRight()"
   ></button>
 </div>

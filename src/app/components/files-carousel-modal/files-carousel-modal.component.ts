@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, WritableSignal, inject, signal } from '@angular/core';
 import { TuiAlertModule, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
 import { TuiCarouselModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -19,32 +19,32 @@ export class FilesCarouselModalComponent implements OnInit {
   private readonly context: TuiDialogContext<void, FileData[]> =
     inject<TuiDialogContext<void, FileData[]>>(POLYMORPHEUS_CONTEXT);
 
-  public filesData: FileData[] = [];
+  public filesData: WritableSignal<FileData[]> = signal<FileData[]>([]);
 
-  public index: number = 0;
-  public isLeftButtonDisabled = false;
-  public isRightButtonDisabled = false;
+  public index: WritableSignal<number> = signal<number>(0);
+  public isLeftButtonDisabled: WritableSignal<boolean> = signal<boolean>(false);
+  public isRightButtonDisabled: WritableSignal<boolean> = signal<boolean>(false);
 
   public ngOnInit(): void {
-    this.filesData = this.context.data;
+    this.filesData.set(this.context.data);
     this.resetButtonDisabling();
   }
 
   public scrollLeft(): void {
-    if (this.index <= 0) {
+    if (this.index() <= 0) {
       return;
     }
 
-    --this.index;
+    this.index.update((value: number) => --value);
     this.resetButtonDisabling();
   }
 
   public scrollRight(): void {
-    if (this.index >= this.filesData.length - 1) {
+    if (this.index() >= this.filesData().length - 1) {
       return;
     }
 
-    ++this.index;
+    this.index.update((value: number) => ++value);
     this.resetButtonDisabling();
   }
 
@@ -53,7 +53,7 @@ export class FilesCarouselModalComponent implements OnInit {
   }
 
   private resetButtonDisabling(): void {
-    this.isLeftButtonDisabled = this.index <= 0;
-    this.isRightButtonDisabled = this.index >= this.filesData.length - 1;
+    this.isLeftButtonDisabled.set(this.index() <= 0);
+    this.isRightButtonDisabled.set(this.index() >= this.filesData().length - 1);
   }
 }
