@@ -1,21 +1,18 @@
 use anyhow::Context;
-use chrono::{NaiveDate, NaiveDateTime, Utc};
+use chrono::NaiveDate;
+
 use serde::Serialize;
-use std::{
-    ffi::OsStr,
-    fs::Metadata,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::path::Path;
 use ts_rs::TS;
 use walkdir::{DirEntry, WalkDir};
 
-use crate::utils::{get_file_type, is_dir, FileType};
+use crate::utils::{get_file_type, is_dir, FileType, SUITABLE_FILE_PATH_REGEX};
 
 #[derive(Serialize, TS)]
 #[ts(export, export_to = "file-data.type.ts", rename_all = "camelCase")]
 #[serde(rename_all = "camelCase")]
 pub struct FileData {
-    date_time: NaiveDateTime,
+    date_time: NaiveDate,
     name: String,
     kind: FileType,
     local_url: String,
@@ -48,35 +45,36 @@ fn process_entry(
     date: NaiveDate,
     files_data: &mut Vec<FileData>,
 ) -> anyhow::Result<()> {
-    let entry: DirEntry = entry.context("access entry")?;
-    let entry_name: &OsStr = entry.file_name();
-    let entry_metadata: Metadata = entry.metadata().context("get metadata")?;
-    let created_system_time: SystemTime = entry_metadata.created().context("get created time")?;
+    let entry: walkdir::DirEntry = entry.context("access entry")?;
+    let entry_path: &Path = entry.path();
 
-    let created_time_as_secs: u64 = created_system_time
-        .duration_since(UNIX_EPOCH)
-        .context("calculate UNIX time")?
-        .as_secs();
-
-    let Some(created_utc_datetime) =
-        chrono::DateTime::<Utc>::from_timestamp(created_time_as_secs as _, 0)
-    else {
-        anyhow::bail!("{created_time_as_secs} is not timestamp convertible")
+    let Some(entry_path_str) = entry_path.to_str() else {
+        return Ok(());
     };
 
-    let created_naive_datetime: NaiveDateTime = created_utc_datetime.naive_local();
-    let created_naive_date: NaiveDate = created_naive_datetime.date();
+    let Some(groups) = SUITABLE_FILE_PATH_REGEX.captures(entry_path_str) else {
+        return Ok(());
+    };
+
+    let year: i32 = groups["year"].parse().context("parse year to usize")?;
+    let month: u32 = groups["month"].parse().context("parse month to usize")?;
+    let day: u32 = groups["day"].parse().context("parse day to usize")?;
+
+    let Some(naive_date) = NaiveDate::from_ymd_opt(year, month, day) else {
+        return Ok(());
+    };
+
     let Some(entry_file_type) = get_file_type(&entry) else {
         return Ok(());
     };
 
-    if created_naive_date != date {
+    if naive_date != date {
         return Ok(());
     }
 
     files_data.push(FileData {
-        date_time: created_naive_datetime,
-        name: entry_name.to_string_lossy().to_string(),
+        date_time: naive_date,
+        name: entry.file_name().to_string_lossy().to_string(),
         local_url: entry.path().display().to_string(),
         kind: entry_file_type,
     });

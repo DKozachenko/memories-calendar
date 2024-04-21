@@ -1,16 +1,12 @@
-use std::{
-    collections::HashMap,
-    fs::Metadata,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::{collections::HashMap, path::Path};
 use ts_rs::TS;
 
 use anyhow::Context;
-use chrono::{NaiveDate, Utc};
+use chrono::NaiveDate;
 use serde::Serialize;
 use walkdir::{DirEntry, WalkDir};
 
-use crate::utils::{get_file_type, is_dir, FileType};
+use crate::utils::{get_file_type, is_dir, FileType, SUITABLE_FILE_PATH_REGEX};
 #[derive(Serialize, Default, TS)]
 #[ts(
     export,
@@ -48,25 +44,29 @@ fn process_entry(
     events_map: &mut HashMap<NaiveDate, DateQuantitativeData>,
 ) -> anyhow::Result<()> {
     let entry: DirEntry = entry.context("access entry")?;
-    let entry_metadata: Metadata = entry.metadata().context("get metadata")?;
-    let created_system_time: SystemTime = entry_metadata.created().context("get created time")?;
-    let created_time_as_secs: u64 = created_system_time
-        .duration_since(UNIX_EPOCH)
-        .context("calculate UNIX time")?
-        .as_secs();
+    let entry_path: &Path = entry.path();
 
-    let Some(created_utc_datetime) =
-        chrono::DateTime::<Utc>::from_timestamp(created_time_as_secs as _, 0)
-    else {
-        anyhow::bail!("{created_time_as_secs} is not timestamp convertible")
+    let Some(entry_path_str) = entry_path.to_str() else {
+        return Ok(());
     };
 
-    let created_naive_date: NaiveDate = created_utc_datetime.naive_local().date();
+    let Some(groups) = SUITABLE_FILE_PATH_REGEX.captures(entry_path_str) else {
+        return Ok(());
+    };
+
+    let year: i32 = groups["year"].parse().context("parse year to usize")?;
+    let month: u32 = groups["month"].parse().context("parse month to usize")?;
+    let day: u32 = groups["day"].parse().context("parse day to usize")?;
+
+    let Some(naive_date) = NaiveDate::from_ymd_opt(year, month, day) else {
+        return Ok(());
+    };
+
     let Some(entry_file_type) = get_file_type(&entry) else {
         return Ok(());
     };
 
-    let event_data: &mut DateQuantitativeData = events_map.entry(created_naive_date).or_default();
+    let event_data: &mut DateQuantitativeData = events_map.entry(naive_date).or_default();
 
     match entry_file_type {
         FileType::Video => event_data.videos_number += 1,
