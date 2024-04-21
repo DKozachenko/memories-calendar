@@ -26,8 +26,8 @@ pub fn get_event_files_data_command(path: &str, date: NaiveDate) -> Result<Vec<F
 fn get_event_files_data(path: &str, date: NaiveDate) -> anyhow::Result<Vec<FileData>> {
     is_dir(path)?;
 
-    let mut files_data: Vec<FileData> = Vec::new();
     let dir: WalkDir = WalkDir::new(path);
+    let mut files_data: Vec<FileData> = Vec::new();
 
     for entry in dir {
         if let Err(err) = process_entry(entry, date, &mut files_data) {
