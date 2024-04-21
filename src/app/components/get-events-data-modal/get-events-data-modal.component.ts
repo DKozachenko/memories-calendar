@@ -52,7 +52,7 @@ export class GetEventsDataModalComponent {
     new FormControl<string | null>(null, [
       Validators.required,
       currentDirectoryValidator(this.storeService),
-      filePathValidator(),
+      // filePathValidator(),
     ]),
   );
 

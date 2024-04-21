@@ -1,17 +1,17 @@
-name: Web Checks
+name: Web
 
 on:
   workflow_dispatch:
   pull_request:
     branches: ['develop']
     paths:
-      - .github/**
+      - .github/workflows/web.yml
       - .eslintrc.json
       - ./src/**
   push:
     branches: ['develop']
     paths:
-      - .github/**
+      - .github/workflows/web.yml
       - .eslintrc.json
       - ./src/**
 
