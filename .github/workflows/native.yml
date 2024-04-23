@@ -162,7 +162,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MACOS_BUILD_DMG_PATH: ./src-tauri/target/release/bundle/macos
+          MACOS_BUILD_DMG_PATH: ./src-tauri/target/release/bundle/dmg
           MACOS_BUILD_DMG_NAME: Memories Calendar_${{ needs.create-release.outputs.version}}_x64.dmg
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}

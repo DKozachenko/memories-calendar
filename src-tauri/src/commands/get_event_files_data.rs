@@ -35,7 +35,7 @@ fn get_event_files_data(path: &str, date: NaiveDate) -> anyhow::Result<Vec<FileD
         }
     }
 
-    files_data.sort_by(|a, b| a.date_time.cmp(&b.date_time));
+    files_data.sort_by(|a, b| a.name.cmp(&b.name));
 
     Ok(files_data)
 }
