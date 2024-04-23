@@ -28,11 +28,12 @@ jobs:
       - name: Run linter
         working-directory: ./src-tauri
         run: cargo clippy
-  
+
   create-release:
     needs: [lint]
     runs-on: ubuntu-latest
     outputs:
+      version: ${{ steps.version.outputs.VERSION }}
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Get repository code
@@ -51,7 +52,7 @@ jobs:
           release_name: Release ${{ steps.version.outputs.VERSION }}
           body_path: ./CHANGELOG.md
           draft: false
-          prerelease: true
+          prerelease: false
 
   linux-release:
     needs: [create-release]
@@ -76,8 +77,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINUX_BUILD_DEB_PATH: ./src-tauri/target/release/bundle/deb
-          # TODO: версию из прошлой джобы
-          LINUX_BUILD_DEB_NAME: memories-calendar_1.0.0_amd64.deb
+          # TODO: версию из прошлой джобы 
+          LINUX_BUILD_DEB_NAME: memories-calendar_${{ needs.create-release.outputs.version}}_amd64.deb
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{ env.LINUX_BUILD_DEB_PATH }}/${{ env.LINUX_BUILD_DEB_NAME }}
@@ -88,7 +89,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINUX_BUILD_APPIMAGE_PATH: ./src-tauri/target/release/bundle/appimage
-          LINUX_BUILD_APPIMAGE_NAME: memories-calendar_1.0.0_amd64.AppImage
+          LINUX_BUILD_APPIMAGE_NAME: memories-calendar_${{ needs.create-release.outputs.version}}_amd64.AppImage
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{ env.LINUX_BUILD_APPIMAGE_PATH }}/${{ env.LINUX_BUILD_APPIMAGE_NAME }}
@@ -97,7 +98,7 @@ jobs:
 
   windows-release:
     needs: [create-release]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Get repository code
         uses: actions/checkout@v4
@@ -114,8 +115,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WINDOWS_BUILD_MSI_PATH: ./src-tauri/target/release/bundle/msi
-          # TODO: версию из прошлой джобы
-          WINDOWS_BUILD_MSI_NAME: Memories Calendar_1.0.0_x64_en-US.msi
+          WINDOWS_BUILD_MSI_NAME: Memories Calendar_${{ needs.create-release.outputs.version}}_x64_en-US.msi
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{ env.WINDOWS_BUILD_MSI_PATH }}/${{ env.WINDOWS_BUILD_MSI_NAME }}
@@ -126,9 +126,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WINDOWS_BUILD_NSIS_PATH: ./src-tauri/target/release/bundle/nsis
-          WINDOWS_BUILD_NSIS_NAME: Memories Calendar_1.0.0_x64-setup.exe
+          WINDOWS_BUILD_NSIS_NAME: Memories Calendar_${{ needs.create-release.outputs.version}}_x64-setup.exe
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{ env.WINDOWS_BUILD_NSIS_PATH }}/${{ env.WINDOWS_BUILD_NSIS_NAME }}
           asset_name: ${{ env.WINDOWS_BUILD_NSIS_NAME }}
           asset_content_type: application/x-executable
+    
+  macos-release:
+    needs: [create-release]
+    runs-on: macos-latest
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - name: Install dependencies
+        run: pnpm i
+      - name: Run build
+        run: npx tauri build
+      - name: Upload app
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MACOS_BUILD_APP_PATH: ./src-tauri/target/release/bundle/macos
+          MACOS_BUILD_APP_NAME: Memories Calendar.app
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.MACOS_BUILD_APP_PATH }}/${{ env.MACOS_BUILD_APP_NAME }}
+          asset_name: ${{ env.MACOS_BUILD_APP_NAME }}
+          asset_content_type: application/x-executable
+      - name: Upload dmg image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MACOS_BUILD_DMG_PATH: ./src-tauri/target/release/bundle/macos
+          MACOS_BUILD_DMG_NAME: Memories Calendar_${{ needs.create-release.outputs.version}}_x64.dmg
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.MACOS_BUILD_DMG_PATH }}/${{ env.MACOS_BUILD_DMG_NAME }}
+          asset_name: ${{ env.MACOS_BUILD_DMG_NAME }}
+          asset_content_type: application/x-apple-diskimage
+        
