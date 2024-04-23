@@ -77,7 +77,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINUX_BUILD_DEB_PATH: ./src-tauri/target/release/bundle/deb
-          # TODO: версию из прошлой джобы 
           LINUX_BUILD_DEB_NAME: memories-calendar_${{ needs.create-release.outputs.version}}_amd64.deb
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
@@ -147,17 +146,6 @@ jobs:
         run: pnpm i
       - name: Run build
         run: npx tauri build
-      - name: Upload app
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MACOS_BUILD_APP_PATH: ./src-tauri/target/release/bundle/macos
-          MACOS_BUILD_APP_NAME: Memories Calendar.app
-        with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ${{ env.MACOS_BUILD_APP_PATH }}/${{ env.MACOS_BUILD_APP_NAME }}
-          asset_name: ${{ env.MACOS_BUILD_APP_NAME }}
-          asset_content_type: application/x-executable
       - name: Upload dmg image
         uses: actions/upload-release-asset@v1
         env:
