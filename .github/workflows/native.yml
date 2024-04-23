@@ -76,6 +76,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LINUX_BUILD_DEB_PATH: ./src-tauri/target/release/bundle/deb
+          # TODO: версию из прошлой джобы
           LINUX_BUILD_DEB_NAME: memories-calendar_1.0.0_amd64.deb
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
@@ -92,4 +93,42 @@ jobs:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ${{ env.LINUX_BUILD_APPIMAGE_PATH }}/${{ env.LINUX_BUILD_APPIMAGE_NAME }}
           asset_name: ${{ env.LINUX_BUILD_APPIMAGE_NAME }}
+          asset_content_type: application/x-executable
+
+  windows-release:
+    needs: [create-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - name: Install dependencies
+        run: pnpm i
+      - name: Run build
+        run: npx tauri build
+      - name: Upload msi image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WINDOWS_BUILD_MSI_PATH: ./src-tauri/target/release/bundle/msi
+          # TODO: версию из прошлой джобы
+          WINDOWS_BUILD_MSI_NAME: Memories Calendar_1.0.0_x64_en-US.msi
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.WINDOWS_BUILD_MSI_PATH }}/${{ env.WINDOWS_BUILD_MSI_NAME }}
+          asset_name: ${{ env.WINDOWS_BUILD_MSI_NAME }}
+          asset_content_type: application/x-ms-installer
+      - name: Upload nsis image
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WINDOWS_BUILD_NSIS_PATH: ./src-tauri/target/release/bundle/nsis
+          WINDOWS_BUILD_NSIS_NAME: Memories Calendar_1.0.0_x64-setup.exe
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.WINDOWS_BUILD_NSIS_PATH }}/${{ env.WINDOWS_BUILD_NSIS_NAME }}
+          asset_name: ${{ env.WINDOWS_BUILD_NSIS_NAME }}
           asset_content_type: application/x-executable
