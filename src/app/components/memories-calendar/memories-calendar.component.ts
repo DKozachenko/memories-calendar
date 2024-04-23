@@ -45,23 +45,23 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly storeService: StoreService = inject(StoreService);
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
-  private getEventsDataModal: WritableSignal<Observable<IDateQuantitativeDataMap>> = signal<
-    Observable<IDateQuantitativeDataMap>
-  >(
-    this.dialogService.open<IDateQuantitativeDataMap>(
-      new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
-      {
-        closeable: false,
-        dismissible: false,
-        label: 'Выберите папку с файлами',
-      },
-    ),
-  );
-
   public calendarOptions: WritableSignal<CalendarOptions | undefined> = signal<CalendarOptions | undefined>(undefined);
 
   public ngOnInit(): void {
     this.openGetEventsDataModal();
+  }
+
+  private getEventsDataModal(): Observable<IDateQuantitativeDataMap> {
+    const isClosable: boolean = !!this.storeService.getDirectory();
+
+    return this.dialogService.open<IDateQuantitativeDataMap>(
+      new PolymorpheusComponent(GetEventsDataModalComponent, this.injector),
+      {
+        closeable: isClosable,
+        dismissible: false,
+        label: 'Выберите папку с файлами',
+      },
+    );
   }
 
   private openGetEventsDataModal(): void {

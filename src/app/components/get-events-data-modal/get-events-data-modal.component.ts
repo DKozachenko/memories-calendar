@@ -17,7 +17,6 @@ import { IDateQuantitativeDataMap } from '../../models/interfaces';
   imports: [
     TuiInputModule,
     TuiButtonModule,
-    TuiAlertModule,
     TuiAutoFocusModule,
     TuiFieldErrorPipeModule,
     TuiErrorModule,
@@ -52,7 +51,7 @@ export class GetEventsDataModalComponent {
     new FormControl<string | null>(null, [
       Validators.required,
       currentDirectoryValidator(this.storeService),
-      // filePathValidator(),
+      filePathValidator(),
     ]),
   );
 
@@ -63,6 +62,17 @@ export class GetEventsDataModalComponent {
       .pipe(takeUntil(this.destroyService))
       .subscribe({
         next: (data: IDateQuantitativeDataMap) => {
+          if (Object.keys(data).length === 0) {
+            this.alertService
+              .open('В указанной директории нет подходящих файлов', {
+                label: 'Предупреждение',
+                status: 'warning',
+                autoClose: true,
+              })
+              .subscribe();
+            return;
+          }
+
           this.storeService.updateDirectory(path);
           this.context.completeWith(data);
         },
