@@ -19,6 +19,8 @@ export class VideoPlayerComponent {
   public currentTime: WritableSignal<number> = signal<number>(0);
   public paused: WritableSignal<boolean> = signal<boolean>(true);
 
+  public showSkeleton: WritableSignal<boolean> = signal<boolean>(false);
+
   public get icon(): string {
     return this.paused() ? 'tuiIconPlayLarge' : 'tuiIconPauseLarge';
   }

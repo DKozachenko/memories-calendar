@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, InputSignal, OnInit, WritableSignal, input, signal } from '@angular/core';
 import { FileData } from '@bindings/file-data.type';
-import { VideoPlayerComponent } from '../video-player/video-player.component';
 import { convertFileSrc } from '@tauri-apps/api/tauri';
+import { VideoPlayerComponent } from '../video-player/video-player.component';
+import { ImageComponent } from '../image/image.component';
 
 @Component({
   selector: 'app-file-card',
   standalone: true,
-  imports: [VideoPlayerComponent],
+  imports: [VideoPlayerComponent, ImageComponent],
   templateUrl: './file-card.component.html',
   styleUrl: './file-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

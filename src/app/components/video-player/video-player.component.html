@@ -1,9 +1,14 @@
-<div class="player">
+<div
+  class="player"
+  [class.tui-skeleton]="showSkeleton()"
+>
   <video
     #video
     tuiMedia
     width="320"
     class="video"
+    (loadstart)="showSkeleton.set(true)"
+    (canplaythrough)="showSkeleton.set(false)"
     [(currentTime)]="currentTime"
     [(paused)]="paused"
     (click)="toggleState()"

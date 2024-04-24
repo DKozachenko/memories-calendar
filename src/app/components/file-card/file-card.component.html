@@ -1,15 +1,11 @@
 <div class="file-card">
   @switch (fileData().kind) {
     @case ('Video') {
-      <div class="video-wrapper">
-        <app-video-player [sourceUrl]="mediaSrc()"></app-video-player>
-      </div>
+      <app-video-player [sourceUrl]="mediaSrc()"></app-video-player>
       <p class="tui-text_body-m">{{ fileData().name }}</p>
     } 
     @case ('Photo') {
-      <div class="image-wrapper">
-        <img [src]="mediaSrc()" [alt]="fileData().name" />
-      </div>
+      <app-image [mediaSrc]="mediaSrc()" [name]="fileData().name"></app-image>
       <p class="tui-text_body-m">{{ fileData().name }}</p>
     } 
     @default {

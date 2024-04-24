@@ -5,11 +5,12 @@ import { TuiAlertService, TuiButtonModule, TuiDialogContext, TuiErrorModule } fr
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipeModule, TuiInputModule } from '@taiga-ui/kit';
 import { TuiDestroyService, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { takeUntil } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs';
 import { CommandService, StoreService } from '../../services';
 import { currentDirectoryValidator, filePathValidator } from '../../validators';
 import { Command } from '../../models/enums';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
+import { BackdropComponent } from '../backdrop/backdrop.component';
 
 @Component({
   selector: 'app-get-events-data-modal',
@@ -23,6 +24,7 @@ import { IDateQuantitativeDataMap } from '../../models/interfaces';
     AsyncPipe,
     FormsModule,
     ReactiveFormsModule,
+    BackdropComponent,
   ],
   providers: [
     TuiDestroyService,
@@ -55,11 +57,18 @@ export class GetEventsDataModalComponent {
     ]),
   );
 
+  public readonly loading: WritableSignal<boolean> = signal<boolean>(false);
+
   public submit(): void {
     const path: string = this.directoryControl().value!;
+
+    this.loading.set(true);
     this.commandService
       .execute<IDateQuantitativeDataMap, { path: string }>(Command.GET_EVENTS, { path })
-      .pipe(takeUntil(this.destroyService))
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroyService),
+      )
       .subscribe({
         next: (data: IDateQuantitativeDataMap) => {
           if (Object.keys(data).length === 0) {

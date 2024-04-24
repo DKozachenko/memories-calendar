@@ -18,17 +18,24 @@ import { TuiAlertService, TuiDialogModule, TuiDialogService } from '@taiga-ui/co
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { FileData } from '@bindings/file-data.type';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable, finalize, takeUntil } from 'rxjs';
 import { IDateQuantitativeDataMap } from '../../models/interfaces';
 import { CommandService, EventBuildService, StoreService } from '../../services';
 import { Command } from '../../models/enums';
 import { GetEventsDataModalComponent } from '../get-events-data-modal/get-events-data-modal.component';
 import { FilesCarouselModalComponent } from '../files-carousel-modal/files-carousel-modal.component';
+import { BackdropComponent } from '../backdrop/backdrop.component';
 
 @Component({
   selector: 'app-memories-calendar',
   standalone: true,
-  imports: [FullCalendarModule, TuiDialogModule, GetEventsDataModalComponent, FilesCarouselModalComponent],
+  imports: [
+    FullCalendarModule,
+    TuiDialogModule,
+    GetEventsDataModalComponent,
+    FilesCarouselModalComponent,
+    BackdropComponent,
+  ],
   providers: [TuiDestroyService],
   templateUrl: './memories-calendar.component.html',
   styleUrl: './memories-calendar.component.scss',
@@ -46,6 +53,7 @@ export class MemoriesCalendarComponent implements OnInit {
   private readonly cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   public calendarOptions: WritableSignal<CalendarOptions | undefined> = signal<CalendarOptions | undefined>(undefined);
+  public loading: WritableSignal<boolean> = signal<boolean>(false);
 
   public ngOnInit(): void {
     this.openGetEventsDataModal();
@@ -170,9 +178,13 @@ export class MemoriesCalendarComponent implements OnInit {
       throw new Error('Нет текущей директории в стейте');
     }
 
+    this.loading.set(true);
     this.commandService
       .execute<FileData[], { path: string; date: string }>(Command.GET_EVENT_FILES_DATA, { path, date: dateStr })
-      .pipe(takeUntil(this.destroyService))
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroyService),
+      )
       .subscribe({
         next: (data: FileData[]) => {
           this.dialogService

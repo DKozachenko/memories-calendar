@@ -1,0 +1,7 @@
+<div [class.tui-skeleton]="showSkeleton()">
+  <img
+    [src]="mediaSrc()"
+    [alt]="name()"
+    (load)="showSkeleton.set(false)"
+  />
+</div>
