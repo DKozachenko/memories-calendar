@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, WritableSignal, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+  WritableSignal,
+  inject,
+  signal,
+} from '@angular/core';
 import { TuiAlertModule, TuiButtonModule, TuiDialogContext } from '@taiga-ui/core';
 import { TuiCarouselModule, TuiPaginationModule } from '@taiga-ui/kit';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -55,5 +63,15 @@ export class FilesCarouselModalComponent implements OnInit {
   private resetButtonDisabling(): void {
     this.isLeftButtonDisabled.set(this.index() <= 0);
     this.isRightButtonDisabled.set(this.index() >= this.filesData().length - 1);
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.key == 'ArrowLeft') {
+      this.scrollLeft();
+    }
+    if (event.key == 'ArrowRight') {
+      this.scrollRight();
+    }
   }
 }

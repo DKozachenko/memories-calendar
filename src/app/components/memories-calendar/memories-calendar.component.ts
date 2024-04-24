@@ -73,7 +73,6 @@ export class MemoriesCalendarComponent implements OnInit {
   }
 
   private openGetEventsDataModal(): void {
-    // TODO: возможно, получение будет слишком долгим и нужен будет лоадер, но нужен тест на проде
     this.getEventsDataModal()
       .pipe(takeUntil(this.destroyService))
       .subscribe({
