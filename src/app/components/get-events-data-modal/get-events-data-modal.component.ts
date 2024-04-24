@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, WritableSignal, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiAlertModule, TuiAlertService, TuiButtonModule, TuiDialogContext, TuiErrorModule } from '@taiga-ui/core';
+import { TuiAlertService, TuiButtonModule, TuiDialogContext, TuiErrorModule } from '@taiga-ui/core';
 import { TUI_VALIDATION_ERRORS, TuiFieldErrorPipeModule, TuiInputModule } from '@taiga-ui/kit';
 import { TuiDestroyService, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';

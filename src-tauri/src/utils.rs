@@ -7,7 +7,7 @@ use walkdir::DirEntry;
 
 pub static SUITABLE_FILE_PATH_REGEX: Lazy<Regex> = Lazy::new(|| {
     Regex::new(
-        r"(?<year>20\d{2})[/\\](?<day>\d+)\.(?<month>\d{2})[/\\][A-ZА-Яa-zа-я0-9_ \.,-]+\.\w+$",
+        r"(?<year>20\d{2})[/\\](?<day>\d+)\.(?<month>\d{2})[/\\][A-ZА-Яa-zа-я0-9()_ \.,-]+\.\w+$",
     )
     .unwrap()
 });
