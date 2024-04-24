@@ -3,7 +3,7 @@
 Формат основан на [Keep a Changelog](http://keepachangelog.com/), файл придерживается [Semantic Versioning](http://semver.org/).
 
  
-## [1.0.0] - X.04.2024
+## [1.0.0] - 24.04.2024
  
 ### Добавлено
 
